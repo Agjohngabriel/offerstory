@@ -29,7 +29,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'created_at','updated_at'
+        'created_at','updated_at','otp'
     ];
 
     /**
@@ -47,5 +47,9 @@ class User extends Authenticatable
 
     public function region(){
         return $this->belongsTo(Region::class,'region');
+    }
+
+    public function followings(){
+        return $this->belongsToMany(Store::class,'user_followers','user_id','store_id','id','id');
     }
 }

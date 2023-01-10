@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Store;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -27,17 +29,41 @@ class AuthController extends Controller
             $user = User::create($data);
             $token = $user->createToken('Laravel Password Grant Client')->accessToken;
             $user->attachRole(2);
-            return response()->json([
-                "data" => [
-                    "token" => $token,
-                    "user" => User::with('country','region')->whereId($user->id)->first()
-                ], 'statusCode' => 200, "message" => 'success'
-            ], 200);
+
+            if($request->has('phone')){
+                if($this->sendOTP($user)){
+                    return response()->json([
+                        "data" => null, 'statusCode' => 200, "message" => 'OTP sent to your provided number!'
+                    ], 200);
+                }else{
+                    return response()->json([
+                        "data" => null, 'statusCode' => 200, "message" => 'Something went wrong with OTP!'
+                    ], 200);
+                }
+            }else{
+                return response()->json([
+                    "data" => [
+                        "token" => $token,
+                        "user" => User::with('country','region')->whereId($user->id)->first()
+                    ], 'statusCode' => 200, "message" => 'success'
+                ], 200);
+            }
         }catch(Exception $ex){
             return response()->json([
                 "data" => null, 'statusCode' => 400, "message" => 'can not create a user!'
             ], 200);
         }
+    }
+
+    private function sendOTP(User $user){
+        if($user->update(['otp'=>$this->generateOTP(5)])){
+            return true;
+        }
+        return false;
+    }
+
+    private function generateOTP($digits){
+        return rand(pow(10, $digits-1), pow(10, $digits)-1);
     }
 
     public function login(Request $request){
@@ -47,7 +73,8 @@ class AuthController extends Controller
                 return response()->json([
                     "data" => [
                         "token" => $token,
-                        "user" => User::with('country','region')->whereId(auth()->id())->first()
+                        "user" => User::with('country','region')->whereId(auth()->id())->first(),
+                        "is_store" => Auth::user()->hasRole('store')
                     ], 'statusCode' => 200, "message" => 'success'
                 ], 200);
             }else{
@@ -78,14 +105,32 @@ class AuthController extends Controller
                 $data['email']= $request->email;
             }
             $user = User::create($data);
+            Store::create([
+                'store_name'=>$request->english_storename,
+                'store_ar_name'=>$request->arabic_storename,
+                'user_id'=>$user->id,
+            ]);
             $token = $user->createToken('Laravel Password Grant Client')->accessToken;
             $user->attachRole(3);
-            return response()->json([
-                "data" => [
-                    "token" => $token,
-                    "user" => User::with('country','region')->whereId($user->id)->first()
-                ], 'statusCode' => 200, "message" => 'success'
-            ], 200);
+
+            if($request->has('phone')){
+                if($this->sendOTP($user)){
+                    return response()->json([
+                        "data" => null, 'statusCode' => 200, "message" => 'OTP sent to your provided number!'
+                    ], 200);
+                }else{
+                    return response()->json([
+                        "data" => null, 'statusCode' => 200, "message" => 'Something went wrong with OTP!'
+                    ], 200);
+                }
+            }else{
+                return response()->json([
+                    "data" => [
+                        "token" => $token,
+                        "user" => User::with('country','region')->whereId($user->id)->first()
+                    ], 'statusCode' => 200, "message" => 'success'
+                ], 200);
+            }
         }catch(Exception $ex){
             return response()->json([
                 "data" => null, 'statusCode' => 400, "message" => 'can not create a user!'
@@ -93,26 +138,25 @@ class AuthController extends Controller
         }
     }
 
-    public function store_login(Request $request){
+    public function resend(Request $request){
         try{
-            if(Auth::attempt($request->all())){
-                $token = Auth::user()->createToken('Laravel Password Grant Client')->accessToken;
+            $user = User::where('phone',$request->phone)->first();
+            if($this->sendOTP($user)){
                 return response()->json([
-                    "data" => [
-                        "token" => $token,
-                        "user" => User::with('country','region')->whereId(auth()->id())->first()
-                    ], 'statusCode' => 200, "message" => 'success'
+                    "data" => null, 'statusCode' => 200, "message" => 'OTP sent to your provided number!'
                 ], 200);
             }else{
                 return response()->json([
-                    "data" => null, 'statusCode' => 400, "message" => 'Either username or password id incorrect'
+                    "data" => null, 'statusCode' => 200, "message" => 'Something went wrong with OTP!'
                 ], 200);
             }
         }catch(Exception $ex){
+            Log::error($ex);
             return response()->json([
-                "data" => null, 'statusCode' => 400, "message" => 'Something went wrong!'
+                "data" => null, 'statusCode' => 400, "message" => 'Something went wrong, please try again!'
             ], 200);
         }
+
     }
 
     public function update(Request $request){
@@ -126,5 +170,32 @@ class AuthController extends Controller
                 "data" => null, 'statusCode' => 400, "message" => 'can not update a user!'
             ], 200);
         }
+    }
+
+    public function verify(Request $request){
+        try{
+            $user = User::with('country','region')->where('phone',$request->phone)->firstOrFail();
+            if($user->otp === $request->otp){
+                $user->update(['otp'=>null]);
+                $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+                return response()->json([
+                    "data" => [
+                        "token" => $token,
+                        "user" => $user,
+                        "is_store" => $user->hasRole('store')
+                    ], 'statusCode' => 200, "message" => 'success'
+                ], 200);
+            }else{
+                return response()->json([
+                    "data" => null, 'statusCode' => 400, "message" => 'OTP Missmatched!'
+                ], 200);
+            }
+        }catch(Exception $ex){
+            Log::error($ex);
+            return response()->json([
+                "data" => null, 'statusCode' => 400, "message" => 'Something went wrong!'
+            ], 200);
+        }
+        
     }
 }

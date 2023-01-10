@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Contry;
 use App\Models\Region;
+use App\Models\Store;
+use App\Models\Story;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -36,5 +40,79 @@ class HomeController extends Controller
         ], 200);
     }
 
-    
+    public function categories(){
+        $data = Category::all();
+        return response()->json([
+            "data" => [
+                "categories" => $data
+            ], 'statusCode' => 200, "message" => 'success'
+        ], 200);
+    }
+
+    public function home(){
+        $stories = [];
+        if(auth()->user()){
+            $stories = Store::whereIn('id',auth()->user()->followings()->pluck('store_id')->toArray())->get();
+        }
+        $categories = Category::all();
+        return response()->json([
+            "data" => [
+                'stories'=>$stories,
+                "categories" => $categories
+            ], 'statusCode' => 200, "message" => 'success'
+        ], 200);
+    }
+
+    public function stores(Request $request, $id){
+        $category = Category::whereId($id)->first();
+        
+        $stores = Store::whereHas('available_stories',function($r) use ($id){
+            $r->where('category_id',$id);
+        })->whereHas('branches',function($q) use ($request){
+            $q->where('region_id',$request->region_id);
+        })->orwhereHas('user',function($s) use ($request){
+            $s->where('region',$request->region_id);
+        })->get();
+
+        return response()->json([
+            "data" => [
+                'category'=>$category,
+                'stores'=>$stores,
+            ], 'statusCode' => 200, "message" => 'success'
+        ], 200);
+    }
+
+    public function get_story($id){
+        $store = Store::with('available_stories')->whereId($id)->first();
+        $media = [];
+        foreach($store->available_stories as $story){
+            foreach($story->media as $item){
+                $media[] = $item;
+            }
+        }
+        return response()->json([
+            "data" => [
+                'stories'=>$media
+            ], 'statusCode' => 200, "message" => 'success'
+        ], 200);
+    }
+
+    public function search(Request $request){
+        $stores = Store::where('store_name','like','%'.$request->search_test.'%')
+        ->orWhere('store_ar_name','like','%'.$request->search_test.'%')->get();
+        return response()->json([
+            "data" => [
+                'results'=>$stores
+            ], 'statusCode' => 200, "message" => 'success'
+        ], 200);
+    }
+
+    public function get_store(Request $request, $id){
+        $store = Store::with('branches','stories')->withCount('followers','stories')->where('id',$id)->first();
+        return response()->json([
+            "data" => [
+                'store'=>$store
+            ], 'statusCode' => 200, "message" => 'success!'
+        ], 200);
+    }
 }
