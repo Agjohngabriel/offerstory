@@ -87,6 +87,9 @@ class HomeController extends Controller
         $media = [];
         foreach($store->available_stories as $story){
             foreach($story->media as $item){
+                if(auth()->user()){
+                    $item->views()->syncWithoutDetaching(auth()->user());
+                }
                 $media[] = $item;
             }
         }
@@ -109,6 +112,8 @@ class HomeController extends Controller
 
     public function get_store(Request $request, $id){
         $store = Store::with('branches','stories')->withCount('followers','stories')->where('id',$id)->first();
+        $visits = (int) $store->visits + 1;
+        $store->update(['visits'=>$visits]);
         return response()->json([
             "data" => [
                 'store'=>$store
