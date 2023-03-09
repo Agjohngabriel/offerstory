@@ -100,4 +100,34 @@ class StoreActionController extends Controller
     public function update(){
 
     }
+
+    public function delete_branch($id)
+    {
+        try{
+            if(Branch::whereId($id)->delete()){
+                return response()->json([
+                    "data" => null, 'statusCode' => 200, "message" => 'success!'
+                ], 200);
+            }
+        }catch(Exception $ex){
+            return response()->json([
+                "data" => null, 'statusCode' => 400, "message" => 'error!'
+            ], 200);
+        }
+    }
+
+    public function delete_story($id)
+    {
+        try{
+            if(Story::whereId($id)->delete()){
+                return response()->json([
+                    "data" => null, 'statusCode' => 200, "message" => 'success!'
+                ], 200);
+            }
+        }catch(Exception $ex){
+            return response()->json([
+                "data" => null, 'statusCode' => 400, "message" => 'error!'
+            ], 200);
+        }
+    }
 }

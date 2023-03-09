@@ -46,6 +46,9 @@ Route::prefix('store')->group(function () {
         Route::post('/branch', [App\Http\Controllers\Api\v1\StoreActionController::class,'branch'])->middleware('role:store')->name('store.branch');
         Route::get('/get', [App\Http\Controllers\Api\v1\StoreActionController::class,'get_store'])->middleware('role:store')->name('store.get_store');
         Route::post('/update', [App\Http\Controllers\Api\v1\StoreActionController::class,'update'])->middleware('role:store')->name('store.update');
+        Route::delete('/branch/{id}', [App\Http\Controllers\Api\v1\StoreActionController::class,'delete_branch'])->middleware('role:store')->name('delete.branch');
+        Route::delete('/story/{id}', [App\Http\Controllers\Api\v1\StoreActionController::class,'delete_story'])->middleware('role:store')->name('delete.story');
+
     });
     
 });
