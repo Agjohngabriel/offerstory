@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('story_image_id');
-            $table->boolean('liked');
+            $table->boolean('liked')->default(0);
             $table->timestamps();
         });
     }

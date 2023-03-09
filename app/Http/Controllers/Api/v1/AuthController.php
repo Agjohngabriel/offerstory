@@ -167,7 +167,21 @@ class AuthController extends Controller
             ], 200);
         }catch(Exception $ex){
             return response()->json([
-                "data" => null, 'statusCode' => 400, "message" => 'can not update a user!'
+                "data" => null, 'statusCode' => 400, "message" => 'can not update user!'
+            ], 200);
+        }
+    }
+
+    public function update_store(Request $request){
+        try{
+            $store = Store::where('user_id',auth()->id())->first();
+            $store->update($request->all());
+            return response()->json([
+                "data" => null, 'statusCode' => 200, "message" => 'success'
+            ], 200);
+        }catch(Exception $ex){
+            return response()->json([
+                "data" => null, 'statusCode' => 400, "message" => 'can not update store!'
             ], 200);
         }
     }

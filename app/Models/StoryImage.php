@@ -12,6 +12,6 @@ class StoryImage extends Model
     protected $guarded = [];
 
     public function views(){
-        return $this->hasMany(User::class,'user_id');
+        return $this->belongsToMany(User::class,'story_views','user_id','story_image_id');
     }
 }

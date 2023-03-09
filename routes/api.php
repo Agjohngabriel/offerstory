@@ -40,6 +40,7 @@ Route::prefix('store')->group(function () {
     Route::post('/verify/otp', [App\Http\Controllers\Api\v1\AuthController::class,'verify'])->name('store.verify');
     Route::group([ 'middleware' =>  ['auth:api']], function() {
         Route::post('/update', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->middleware('role:store')->name('store.update');
+        Route::post('/update/page', [App\Http\Controllers\Api\v1\AuthController::class,'update_store'])->middleware('role:store')->name('store.update.page');
         Route::post('/create/story', [App\Http\Controllers\Api\v1\StoreActionController::class,'story'])->middleware('role:store')->name('store.story');
         Route::post('/upload/media', [App\Http\Controllers\Api\v1\StoreActionController::class,'upload'])->middleware('role:store')->name('store.upload');
         Route::post('/branch', [App\Http\Controllers\Api\v1\StoreActionController::class,'branch'])->middleware('role:store')->name('store.branch');
