@@ -19,6 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/login', [App\Http\Controllers\Api\v1\AuthController::class,'login'])->name('login');
+Route::get('/store/{id}/stories', [App\Http\Controllers\Api\v1\HomeController::class,'get_story']);
+Route::post('/follow/{id}', [App\Http\Controllers\Api\v1\UserActionController::class,'follow'])->middleware('auth:api');
+Route::get('/store/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->middleware('auth:api');
 
 Route::prefix('customer')->group(function () {
     Route::post('/signup', [App\Http\Controllers\Api\v1\AuthController::class,'register'])->name('customer.signup');
@@ -28,9 +31,7 @@ Route::prefix('customer')->group(function () {
     Route::group([ 'middleware' =>  ['auth:api']], function() {
         Route::post('/update', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->middleware('role:customer')->name('customer.update');
         Route::get('/home', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->middleware('role:customer')->name('customer.home');
-        Route::get('/store/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->middleware('role:customer')->name('customer.search');
         Route::get('/store/{id}/stories/auth', [App\Http\Controllers\Api\v1\HomeController::class,'get_story'])->middleware('role:customer');
-        Route::post('/follow/{id}', [App\Http\Controllers\Api\v1\UserActionController::class,'follow'])->middleware('role:customer')->name('follow.home');
     });
 });
 
