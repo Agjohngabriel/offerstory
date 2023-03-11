@@ -29,8 +29,6 @@ Route::prefix('customer')->group(function () {
     Route::get('store/{id}/stories', [App\Http\Controllers\Api\v1\HomeController::class,'get_story'])->name('customer.get_story');
     Route::group([ 'middleware' =>  ['auth:api']], function() {
         Route::post('/update', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->middleware('role:customer')->name('customer.update');
-        Route::get('/home', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->middleware('role:customer')->name('customer.home');
-        Route::get('/store/{id}/stories/auth', [App\Http\Controllers\Api\v1\HomeController::class,'get_story'])->middleware('role:customer');
     });
 });
 
@@ -61,3 +59,5 @@ Route::get('/home', [App\Http\Controllers\Api\v1\HomeController::class,'home'])-
 Route::get('/stores/category/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'stores'])->name('stores');
 Route::get('/search', [App\Http\Controllers\Api\v1\HomeController::class,'search'])->name('search');
 Route::get('/store/view/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
+Route::get('/home/auth', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->name('customer.home');
+Route::get('/store/{id}/stories/auth', [App\Http\Controllers\Api\v1\HomeController::class,'get_story']);
