@@ -21,7 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [App\Http\Controllers\Api\v1\AuthController::class,'login'])->name('login');
 Route::get('/store/{id}/stories', [App\Http\Controllers\Api\v1\HomeController::class,'get_story']);
 Route::post('/follow/{id}', [App\Http\Controllers\Api\v1\UserActionController::class,'follow'])->middleware('auth:api');
-Route::get('/store/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->middleware('auth:api');
 
 Route::prefix('customer')->group(function () {
     Route::post('/signup', [App\Http\Controllers\Api\v1\AuthController::class,'register'])->name('customer.signup');
