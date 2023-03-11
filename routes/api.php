@@ -61,4 +61,4 @@ Route::get('/categories', [App\Http\Controllers\Api\v1\HomeController::class,'ca
 Route::get('/home', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->name('home');
 Route::get('/stores/category/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'stores'])->name('stores');
 Route::get('/search', [App\Http\Controllers\Api\v1\HomeController::class,'search'])->name('search');
-Route::get('/store/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
+Route::get('/store/view/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
