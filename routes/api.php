@@ -59,5 +59,5 @@ Route::get('/home', [App\Http\Controllers\Api\v1\HomeController::class,'home'])-
 Route::get('/stores/category/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'stores'])->name('stores');
 Route::get('/search', [App\Http\Controllers\Api\v1\HomeController::class,'search'])->name('search');
 Route::get('/store/view/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
-Route::get('/home/auth', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->name('customer.home');
-Route::get('/store/{id}/stories/auth', [App\Http\Controllers\Api\v1\HomeController::class,'get_story']);
+Route::get('/home/auth', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->middleware('auth:api')->name('customer.home');
+Route::get('/store/{id}/stories/auth', [App\Http\Controllers\Api\v1\HomeController::class,'get_story'])->middleware('auth:api');
