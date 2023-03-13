@@ -52,7 +52,12 @@ class HomeController extends Controller
     public function home(){
         $stories = [];
         if(auth()->user()){
-            $stories = Store::whereIn('id',auth()->user()->followings()->pluck('store_id')->toArray())->get();
+            $stores = Store::whereIn('id',auth()->user()->followings()->pluck('store_id')->toArray())->get();
+            foreach($stores as $store){
+                if($store->is_stories){
+                    $stories[] = $store;
+                }
+            }
         }
         $categories = Category::all();
         return response()->json([
