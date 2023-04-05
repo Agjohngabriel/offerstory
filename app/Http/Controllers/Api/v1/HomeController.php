@@ -95,6 +95,7 @@ class HomeController extends Controller
                 if(auth()->user()){
                     $item->views()->syncWithoutDetaching(auth()->user());
                 }
+                $item->expiry = $story->expiry;
                 $media[] = $item;
             }
         }
