@@ -71,8 +71,14 @@ class HomeController extends Controller
     public function stores(Request $request, $id){
         $category = Category::whereId($id)->first();
         
-        $stores = Store::with('available_stories')->whereHas('available_stories',function($r) use ($id){
+        $stores = Store::whereHas('available_stories',function($r) use ($id){
             $r->where('category_id',$id);
+        })->where(function($r) use ($request){
+            $r->whereHas('branches',function($q) use ($request){
+                $q->where('region_id',$request->region_id);
+            })->orwhereHas('user',function($s) use ($request){
+                $s->where('region',$request->region_id);
+            });
         })->get();
 
         return response()->json([
