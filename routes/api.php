@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/login', [App\Http\Controllers\Api\v1\AuthController::class,'login'])->name('login');
+Route::post('/forget', [App\Http\Controllers\Api\v1\AuthController::class,'forget'])->name('forget');
 Route::get('/store/{id}/stories', [App\Http\Controllers\Api\v1\HomeController::class,'get_story']);
 Route::post('/follow/{id}', [App\Http\Controllers\Api\v1\UserActionController::class,'follow'])->middleware('auth:api');
 Route::get('/store/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
@@ -45,7 +46,6 @@ Route::prefix('store')->group(function () {
         Route::post('/upload/media', [App\Http\Controllers\Api\v1\StoreActionController::class,'upload'])->middleware('role:store')->name('store.upload');
         Route::post('/branch', [App\Http\Controllers\Api\v1\StoreActionController::class,'branch'])->middleware('role:store')->name('store.branch');
         Route::get('/get', [App\Http\Controllers\Api\v1\StoreActionController::class,'get_store'])->middleware('role:store')->name('store.get_store');
-        Route::post('/update', [App\Http\Controllers\Api\v1\StoreActionController::class,'update'])->middleware('role:store')->name('store.update');
         Route::delete('/branch/{id}', [App\Http\Controllers\Api\v1\StoreActionController::class,'delete_branch'])->middleware('role:store')->name('delete.branch');
         Route::delete('/story/{id}', [App\Http\Controllers\Api\v1\StoreActionController::class,'delete_story'])->middleware('role:store')->name('delete.story');
 
