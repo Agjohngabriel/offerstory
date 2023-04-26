@@ -23,6 +23,9 @@ Route::post('/forget', [App\Http\Controllers\Api\v1\AuthController::class,'forge
 Route::get('/store/{id}/stories', [App\Http\Controllers\Api\v1\HomeController::class,'get_story']);
 Route::post('/follow/{id}', [App\Http\Controllers\Api\v1\UserActionController::class,'follow'])->middleware('auth:api');
 Route::get('/store/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
+Route::group([ 'middleware' =>  ['auth:api']], function() {
+    Route::post('/update/user', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->name('user.update');
+});
 
 
 Route::prefix('customer')->group(function () {
@@ -30,9 +33,6 @@ Route::prefix('customer')->group(function () {
     Route::post('/resend/otp', [App\Http\Controllers\Api\v1\AuthController::class,'resend'])->name('customer.resend');
     Route::post('/verify/otp', [App\Http\Controllers\Api\v1\AuthController::class,'verify'])->name('customer.verify');
     Route::get('store/{id}/stories', [App\Http\Controllers\Api\v1\HomeController::class,'get_story'])->name('customer.get_story');
-    Route::group([ 'middleware' =>  ['auth:api']], function() {
-        Route::post('/update/user', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->middleware('role:customer')->name('customer.update');
-    });
 });
 
 Route::prefix('store')->group(function () {
@@ -40,7 +40,6 @@ Route::prefix('store')->group(function () {
     Route::post('/resend/otp', [App\Http\Controllers\Api\v1\AuthController::class,'resend'])->name('store.resend');
     Route::post('/verify/otp', [App\Http\Controllers\Api\v1\AuthController::class,'verify'])->name('store.verify');
     Route::group([ 'middleware' =>  ['auth:api']], function() {
-        Route::post('/update/user', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->middleware('role:store')->name('store.update');
         Route::post('/update/page', [App\Http\Controllers\Api\v1\AuthController::class,'update_store'])->middleware('role:store')->name('store.update.page');
         Route::post('/create/story', [App\Http\Controllers\Api\v1\StoreActionController::class,'story'])->middleware('role:store')->name('store.story');
         Route::post('/upload/media', [App\Http\Controllers\Api\v1\StoreActionController::class,'upload'])->middleware('role:store')->name('store.upload');
