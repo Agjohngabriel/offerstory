@@ -92,7 +92,6 @@ class HomeController extends Controller
     public function get_story($id){
         $store = Store::with('available_stories')->whereId($id)->first();
         $media = [];
-        dd($store->available_stories);
         foreach($store->available_stories as $story){
             foreach($story->media as $item){
                 if(auth()->user()){
