@@ -22,13 +22,13 @@ class StoreActionController extends Controller
                 'category_id'=>$request->category_id,
                 'region_id'=>$request->region_id,
                 'expiry'=>Carbon::parse($request->expiry),
-                'description'=>$request->description,
+                'description'=>$request->description ?? "",
             ]);
             if($request->has('photos')){
                 foreach($request->photos as $photo){
                     StoryImage::create([
                         'story_id'=>$story->id,
-                        'description'=>$photo['description'],
+                        'description'=>$photo['description'] ?? "",
                         'media_type'=>$photo['media_type'],
                         'media_url'=>$photo['media_url'],
                     ]);
