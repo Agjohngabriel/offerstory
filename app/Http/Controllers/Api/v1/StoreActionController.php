@@ -20,10 +20,12 @@ class StoreActionController extends Controller
             $story = Story::create([
                 'store_id'=>Store::where('user_id',auth()->id())->first()->id,
                 'category_id'=>$request->category_id,
-                'region_id'=>$request->region_id,
                 'expiry'=>Carbon::parse($request->expiry),
                 'description'=>$request->description ?? "",
             ]);
+            if($request->region_id){
+                $story->regions()->attach($request->region_id);
+            }
             if($request->has('photos')){
                 foreach($request->photos as $photo){
                     StoryImage::create([
