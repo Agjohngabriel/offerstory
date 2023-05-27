@@ -93,7 +93,7 @@ class HomeController extends Controller
         $store = Store::with('available_stories')->whereId($id)->first();
         $media = [];
         foreach($store->available_stories as $story){
-            dd($request->get('category_id') && $story->category_id == $request->get('category_id'),$story->category_id, $request->get('category_id'));
+            // dd($request->get('category_id') && $story->category_id == $request->get('category_id'),$story->category_id, $request->get('category_id'));
             if($request->get('category_id') && $story->category_id == $request->get('category_id')){
                 foreach($story->media as $item){
                     if(auth()->user()){
