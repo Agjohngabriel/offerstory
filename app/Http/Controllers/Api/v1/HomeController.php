@@ -89,16 +89,18 @@ class HomeController extends Controller
         ], 200);
     }
 
-    public function get_story($id){
+    public function get_story($id, Request $request){
         $store = Store::with('available_stories')->whereId($id)->first();
         $media = [];
         foreach($store->available_stories as $story){
-            foreach($story->media as $item){
-                if(auth()->user()){
-                    $item->views()->syncWithoutDetaching(auth()->user());
+            if($request->get('category_id') && $story->category_id === $request->get('category_id')){
+                foreach($story->media as $item){
+                    if(auth()->user()){
+                        $item->views()->syncWithoutDetaching(auth()->user());
+                    }
+                    $item->expiry = $story->expiry;
+                    $media[] = $item;
                 }
-                $item->expiry = $story->expiry;
-                $media[] = $item;
             }
         }
         return response()->json([
