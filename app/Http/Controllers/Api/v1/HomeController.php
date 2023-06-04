@@ -79,7 +79,7 @@ class HomeController extends Controller
             })->orwhereHas('user',function($s) use ($request){
                 $s->where('region',$request->region_id);
             });
-        })->get();
+        })->where('status',1)->get();
 
         return response()->json([
             "data" => [
@@ -122,8 +122,9 @@ class HomeController extends Controller
     }
 
     public function search(Request $request){
-        $stores = Store::where('store_name','like','%'.$request->search_test.'%')
-        ->orWhere('store_ar_name','like','%'.$request->search_test.'%')->get();
+        $stores = Store::where(function($r)use($request){
+            $r->where('store_name','like','%'.$request->search_test.'%')->orWhere('store_ar_name','like','%'.$request->search_test.'%');
+        })->where('status',1)->get();
         return response()->json([
             "data" => [
                 'results'=>$stores
@@ -132,7 +133,7 @@ class HomeController extends Controller
     }
 
     public function get_store(Request $request, $id){
-        $store = Store::with('branches','stories')->withCount('followers','stories')->where('id',$id)->first();
+        $store = Store::with('branches','stories')->withCount('followers','stories')->where('id',$id)->where('status',1)->first();
         $visits = (int) $store->visits + 1;
         $store->update(['visits'=>$visits]);
         return response()->json([

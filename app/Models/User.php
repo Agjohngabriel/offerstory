@@ -49,6 +49,14 @@ class User extends Authenticatable
         return $this->belongsTo(Region::class,'region');
     }
 
+    public function countryd(){
+        return $this->belongsTo(Contry::class,'country');
+    }
+
+    public function regiond(){
+        return $this->belongsTo(Region::class,'region');
+    }
+
     public function followings(){
         return $this->belongsToMany(Store::class,'user_followers','user_id','store_id','id','id');
     }

@@ -12,6 +12,7 @@ class Store extends Model
 
     protected $guarded = [];
     protected $appends = ['is_stories','is_followed'];
+    protected $hidden = ['status'];
 
     public function stories(){
         return $this->hasMany(Story::class,'store_id')->with('media');
@@ -45,5 +46,9 @@ class Store extends Model
     }
     public function user(){
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function userd(){
+        return $this->belongsTo(User::class,'user_id')->with('countryd','regiond');
     }
 }

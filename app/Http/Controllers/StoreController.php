@@ -12,9 +12,18 @@ class StoreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function dashboard()
     {
-        //
+        $stores = Store::where('status', 0)->with('userd')->paginate(15);
+        return view('dashboard', compact('stores'));
+    }
+
+
+    public function approve($id)
+    {
+        $store = Store::where('id', $id)->first();
+        $store->update(['status'=>1]);
+        return redirect()->back();
     }
 
     /**
