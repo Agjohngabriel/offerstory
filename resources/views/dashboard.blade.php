@@ -39,7 +39,11 @@
                                     <td>{{$store->userd->regiond ? $store->userd->regiond->title : 'No Region'}}</td>
                                     <td>
                                         <div style="border-radius:50%; width:35px; height:35px; overflow:hidden; object-fit: cover; object-position:center;">
+                                            @if($store->store_icon)
                                             <img src="{{ asset($store->store_icon) }}" style="width:100%; height:100%;"/>
+                                            @else
+                                            <img src="https://static.wikia.nocookie.net/two-piecerp/images/5/52/Noimg.png/revision/latest?cb=20210705071141" style="width:100%; height:100%;"/>
+                                            @endif
                                         </div>
                                     </td>
                                     <td>{{$store->created_at}}</td>
