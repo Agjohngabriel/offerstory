@@ -18,11 +18,32 @@ class StoreController extends Controller
         return view('dashboard', compact('stores'));
     }
 
+    public function allStores()
+    {
+        $stores = Store::where('status', 1)->with('userd');
+        if(request()->get('search')){
+            $stores = $stores->where(function($s){
+                $s->where('store_name','like','%'.request()->get('search').'%')
+                ->orWhere('store_ar_name','like','%'.request()->get('search').'%');
+            });
+        }
+        $stores = $stores->paginate(15);
+        $search = request()->get('search');
+        return view('stores', compact('stores','search'));
+    }
+
 
     public function approve($id)
     {
         $store = Store::where('id', $id)->first();
         $store->update(['status'=>1]);
+        return redirect()->back();
+    }
+
+    public function disapprove($id)
+    {
+        $store = Store::where('id', $id)->first();
+        $store->update(['status'=>0]);
         return redirect()->back();
     }
 

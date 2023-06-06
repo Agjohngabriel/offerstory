@@ -20,7 +20,9 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [StoreController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/stores', [StoreController::class, 'allStores'])->middleware(['auth', 'verified'])->name('stores');
 Route::get('/approve/{id}', [StoreController::class, 'approve'])->middleware(['auth', 'verified'])->name('approve');
+Route::get('/disapprove/{id}', [StoreController::class, 'disapprove'])->middleware(['auth', 'verified'])->name('disapprove');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
