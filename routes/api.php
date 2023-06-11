@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ Route::get('/store/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::clas
 Route::group([ 'middleware' =>  ['auth:api']], function() {
     Route::post('/update/user', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->name('user.update');
 });
+Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.reset');
 
 
 Route::prefix('customer')->group(function () {
