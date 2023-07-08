@@ -86,7 +86,7 @@ class HomeController extends Controller
         return response()->json([
             "data" => [
                 'category'=>$category,
-                'stores'=>$stores,
+                'stores'=>$result,
             ], 'statusCode' => 200, "message" => 'success'
         ], 200);
     }
