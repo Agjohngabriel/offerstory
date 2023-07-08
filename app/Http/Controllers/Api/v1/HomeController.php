@@ -86,7 +86,7 @@ class HomeController extends Controller
             $r->where('category_id',$id);
         })->where('status',1)->get();
         $result = [];
-        dd($stores->count());
+
         foreach($stores as $store){
             foreach($store->available_stories as $story){
                 if($story->regions()->where('region_id', $request->region_id)->exists()){
