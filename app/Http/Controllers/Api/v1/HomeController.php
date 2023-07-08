@@ -109,9 +109,9 @@ class HomeController extends Controller
                     'updated_at' => $store->updated_at,
                     'visits' => $store->visits,
                     'is_stories' => $store->is_stories,
-                    'is_followed' => $store->is_followed
+                    'is_followed' => $store->is_followed,
+                    'available_stories'=>$available_stories
                 ];
-                $result[]['available_stories'] = $available_stories;
             }
         }
         return response()->json([
