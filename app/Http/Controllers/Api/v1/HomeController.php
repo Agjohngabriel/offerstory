@@ -125,8 +125,18 @@ class HomeController extends Controller
         $media = [];
         foreach($store->available_stories as $story){
             // dd($request->get('category_id') && $story->category_id == $request->get('category_id'),$story->category_id, $request->get('category_id'));
-            if($request->get('category_id')){
-                if($story->category_id == $request->get('category_id')){
+            if($story->regions()->where('regions.id', $request->region_id)->exists()){
+                if($request->get('category_id')){
+                    if($story->category_id == $request->get('category_id')){
+                        foreach($story->media as $item){
+                            if(auth()->user()){
+                                $item->views()->syncWithoutDetaching(auth()->user());
+                            }
+                            $item->expiry = $story->expiry;
+                            $media[] = $item;
+                        }
+                    }
+                }else{
                     foreach($story->media as $item){
                         if(auth()->user()){
                             $item->views()->syncWithoutDetaching(auth()->user());
@@ -134,14 +144,6 @@ class HomeController extends Controller
                         $item->expiry = $story->expiry;
                         $media[] = $item;
                     }
-                }
-            }else{
-                foreach($story->media as $item){
-                    if(auth()->user()){
-                        $item->views()->syncWithoutDetaching(auth()->user());
-                    }
-                    $item->expiry = $story->expiry;
-                    $media[] = $item;
                 }
             }
         }
