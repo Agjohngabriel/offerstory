@@ -89,31 +89,26 @@ class HomeController extends Controller
         foreach($stores as $store){
             $available_stories = [];
             foreach($store->available_stories as $story){
-                // if($story->id != 224){
-                //     dd("outside if",$stores->count(),$story->id,$request->region_id, $story->regions->toArray(), $story->regions()->where('region_id', $request->region_id)->exists(), $story->regions()->where('regions.id', $request->region_id)->toSql());
-                // }
                 if($story->regions()->where('regions.id', $request->region_id)->exists()){
-                    // dd($stores->count(), $story->regions()->where('regions.id', $request->region_id)->exists());
                     $available_stories[] = $story;
-                    
                 }
-                if(count($available_stories)>0){
-                    $result[] = [
-                        'id' => $store->id,
-                        'user_id' => $store->user_id,
-                        'store_name' => $store->store_name,
-                        'store_ar_name' => $store->store_ar_name,
-                        'description' => $store->description,
-                        'store_icon' => $store->store_icon,
-                        'store_bg' => $store->store_bg,
-                        'created_at' => $store->created_at,
-                        'updated_at' => $store->updated_at,
-                        'visits' => $store->visits,
-                        'is_stories' => $store->is_stories,
-                        'is_followed' => $store->is_followed,
-                        'available_stories'=>$available_stories
-                    ];
-                }
+            }
+            if(count($available_stories)>0){
+                $result[] = [
+                    'id' => $store->id,
+                    'user_id' => $store->user_id,
+                    'store_name' => $store->store_name,
+                    'store_ar_name' => $store->store_ar_name,
+                    'description' => $store->description,
+                    'store_icon' => $store->store_icon,
+                    'store_bg' => $store->store_bg,
+                    'created_at' => $store->created_at,
+                    'updated_at' => $store->updated_at,
+                    'visits' => $store->visits,
+                    'is_stories' => $store->is_stories,
+                    'is_followed' => $store->is_followed,
+                    'available_stories'=>$available_stories
+                ];
             }
         }
         return response()->json([
