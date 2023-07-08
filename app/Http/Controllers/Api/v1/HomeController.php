@@ -97,21 +97,23 @@ class HomeController extends Controller
                     $available_stories[] = $story;
                     
                 }
-                $result[] = [
-                    'id' => $store->id,
-                    'user_id' => $store->user_id,
-                    'store_name' => $store->store_name,
-                    'store_ar_name' => $store->store_ar_name,
-                    'description' => $store->description,
-                    'store_icon' => $store->store_icon,
-                    'store_bg' => $store->store_bg,
-                    'created_at' => $store->created_at,
-                    'updated_at' => $store->updated_at,
-                    'visits' => $store->visits,
-                    'is_stories' => $store->is_stories,
-                    'is_followed' => $store->is_followed,
-                    'available_stories'=>$available_stories
-                ];
+                if(count($available_stories)>0){
+                    $result[] = [
+                        'id' => $store->id,
+                        'user_id' => $store->user_id,
+                        'store_name' => $store->store_name,
+                        'store_ar_name' => $store->store_ar_name,
+                        'description' => $store->description,
+                        'store_icon' => $store->store_icon,
+                        'store_bg' => $store->store_bg,
+                        'created_at' => $store->created_at,
+                        'updated_at' => $store->updated_at,
+                        'visits' => $store->visits,
+                        'is_stories' => $store->is_stories,
+                        'is_followed' => $store->is_followed,
+                        'available_stories'=>$available_stories
+                    ];
+                }
             }
         }
         return response()->json([
