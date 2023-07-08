@@ -97,25 +97,25 @@ class HomeController extends Controller
                     $available_stories[] = $story;
                     
                 }
-                $result['id'] = $store->id;
-                $result['user_id'] = $store->user_id;
-                $result['store_name'] = $store->store_name;
-                $result['store_ar_name'] = $store->store_ar_name;
-                $result['description'] = $store->description;
-                $result['store_icon'] = $store->store_icon;
-                $result['store_bg'] = $store->store_bg;
-                $result['created_at'] = $store->created_at;
-                $result['updated_at'] = $store->updated_at;
-                $result['visits'] = $store->visits;
-                $result['is_stories'] = $store->is_stories;
-                $result['is_followed'] = $store->is_followed;
-                $result['available_stories'] = $available_stories;
+                $result[]['id'] = $store->id;
+                $result[]['user_id'] = $store->user_id;
+                $result[]['store_name'] = $store->store_name;
+                $result[]['store_ar_name'] = $store->store_ar_name;
+                $result[]['description'] = $store->description;
+                $result[]['store_icon'] = $store->store_icon;
+                $result[]['store_bg'] = $store->store_bg;
+                $result[]['created_at'] = $store->created_at;
+                $result[]['updated_at'] = $store->updated_at;
+                $result[]['visits'] = $store->visits;
+                $result[]['is_stories'] = $store->is_stories;
+                $result[]['is_followed'] = $store->is_followed;
+                $result[]['available_stories'] = $available_stories;
             }
         }
         return response()->json([
             "data" => [
                 'category'=>$category,
-                'stores'=>array_unique($result),
+                'stores'=>$result,
             ], 'statusCode' => 200, "message" => 'success'
         ], 200);
     }
