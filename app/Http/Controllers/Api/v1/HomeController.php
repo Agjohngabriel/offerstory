@@ -86,7 +86,7 @@ class HomeController extends Controller
             $r->where('category_id',$id);
         })->where('status',1)->get();
         $result = [];
-        dd($stores[0]->available_stories);
+
         foreach($stores as $store){
             $available_stories = [];
             foreach($store->available_stories as $story){
