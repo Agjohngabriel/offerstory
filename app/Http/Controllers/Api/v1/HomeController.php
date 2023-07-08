@@ -88,11 +88,11 @@ class HomeController extends Controller
         $result = [];
         foreach($stores as $store){
             foreach($store->available_stories as $story){
-                if($story->id != 224){
-                    dd("outside if",$stores->count(),$story->id,$request->region_id, $story->regions->toArray(), $story->regions()->where('region_id', $request->region_id)->exists(), $story->regions()->where('regions.id', $request->region_id)->toSql());
-                }
+                // if($story->id != 224){
+                //     dd("outside if",$stores->count(),$story->id,$request->region_id, $story->regions->toArray(), $story->regions()->where('region_id', $request->region_id)->exists(), $story->regions()->where('regions.id', $request->region_id)->toSql());
+                // }
                 if($story->regions()->where('regions.id', $request->region_id)->exists()){
-                    dd($stores->count(), $story->regions()->where('regions.id', $request->region_id)->exists());
+                    // dd($stores->count(), $story->regions()->where('regions.id', $request->region_id)->exists());
                     $result[] = $store;
                 }
             }
