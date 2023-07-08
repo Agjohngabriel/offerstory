@@ -77,6 +77,7 @@ class HomeController extends Controller
         $result = [];
         foreach($stores as $store){
             foreach($store->available_stories as $story){
+                dd($story->regions,$story->regions()->where('region_id', $request->region_id)->exists());
                 if($story->regions()->where('region_id', $request->region_id)->exists()){
                     $result[] = $store;
                 }
