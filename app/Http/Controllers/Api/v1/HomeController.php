@@ -70,23 +70,34 @@ class HomeController extends Controller
 
     public function stores(Request $request, $id){
         $category = Category::whereId($id)->first();
-
+        
         $stores = Store::whereHas('available_stories',function($r) use ($id){
             $r->where('category_id',$id);
+        })->where(function($r) use ($request){
+            $r->whereHas('branches',function($q) use ($request){
+                $q->where('region_id',$request->region_id);
+            })->orwhereHas('user',function($s) use ($request){
+                $s->where('region',$request->region_id);
+            });
         })->where('status',1)->get();
-        $result = [];
-        foreach($stores as $store){
-            foreach($store->available_stories as $story){
-                if($story->regions()->where('region_id', $request->region_id)->exists()){
-                    $result[] = $store;
-                }
-            }
-        }
+
+
+        // $stores = Store::whereHas('available_stories',function($r) use ($id){
+        //     $r->where('category_id',$id);
+        // })->where('status',1)->get();
+        // $result = [];
+        // foreach($stores as $store){
+        //     foreach($store->available_stories as $story){
+        //         if($story->regions()->where('region_id', $request->region_id)->exists()){
+        //             $result[] = $store;
+        //         }
+        //     }
+        // }
 
         return response()->json([
             "data" => [
                 'category'=>$category,
-                'stores'=>$result,
+                'stores'=>$stores,
             ], 'statusCode' => 200, "message" => 'success'
         ], 200);
     }
