@@ -97,11 +97,10 @@ class HomeController extends Controller
                 }
             }
         }
-
         return response()->json([
             "data" => [
                 'category'=>$category,
-                'stores'=>$result,
+                'stores'=>array_unique($result),
             ], 'statusCode' => 200, "message" => 'success'
         ], 200);
     }
