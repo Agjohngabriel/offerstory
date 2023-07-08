@@ -90,6 +90,7 @@ class HomeController extends Controller
         foreach($stores as $store){
             foreach($store->available_stories as $story){
                 if($story->regions()->where('region_id', $request->region_id)->exists()){
+                    dd($stores->count(), $story->regions()->where('region_id', $request->region_id)->exists());
                     $result[] = $store;
                 }
             }
