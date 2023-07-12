@@ -93,7 +93,6 @@ class HomeController extends Controller
             $available_stories = [];
             foreach($store->available_stories as $story){
                 if($story->regions()->where('regions.id', $request->region_id)->exists() && $story->category_id == $id){
-                    dd($story->id,$story->regions->pluck('id','title')->toArray());
                     $available_stories[] = $story;
                 }
             }
