@@ -88,7 +88,6 @@ class HomeController extends Controller
 
         $stores = Store::whereHas('available_stories')->where('status',1)->get();
         $result = [];
-        dd($stores->count(), $stores[0]->available_stories);
 
         foreach($stores as $store){
             $available_stories = [];
