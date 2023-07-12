@@ -91,7 +91,7 @@ class HomeController extends Controller
             $available_stories = [];
             foreach($store->available_stories as $story){
                 if($story->regions()->where('regions.id', $request->region_id)->exists()){
-                    dd($story,$story->regions);
+                    dd($story,$story->regions()->toArray());
                     $available_stories[] = $story;
                 }
             }
