@@ -82,16 +82,18 @@ class HomeController extends Controller
         // })->where('status',1)->get();
 
 
-        $stores = Store::whereHas('available_stories',function($r) use ($id){
-            $r->where('category_id',$id);
-        })->where('status',1)->get();
+        // $stores = Store::whereHas('available_stories',function($r) use ($id){
+        //     $r->where('category_id',$id);
+        // })->where('status',1)->get();
+
+        $stores = Store::whereHas('available_stories')->where('status',1)->get();
         $result = [];
         dd($stores->count(), $stores[0]->available_stories);
 
         foreach($stores as $store){
             $available_stories = [];
             foreach($store->available_stories as $story){
-                if($story->regions()->where('regions.id', $request->region_id)->exists()){
+                if($story->regions()->where('regions.id', $request->region_id)->exists() && $story->category_id == $id){
                     dd($story->id,$story->regions->pluck('id','title')->toArray());
                     $available_stories[] = $story;
                 }
