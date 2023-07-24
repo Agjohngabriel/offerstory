@@ -23,6 +23,7 @@ Route::get('/dashboard', [StoreController::class, 'dashboard'])->middleware(['au
 Route::get('/stores', [StoreController::class, 'allStores'])->middleware(['auth', 'verified'])->name('stores');
 Route::get('/approve/{id}', [StoreController::class, 'approve'])->middleware(['auth', 'verified'])->name('approve');
 Route::get('/disapprove/{id}', [StoreController::class, 'disapprove'])->middleware(['auth', 'verified'])->name('disapprove');
+Route::get('/delete/{id}', [StoreController::class, 'delete'])->middleware(['auth', 'verified'])->name('delete');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -14,7 +14,7 @@ class StoreController extends Controller
      */
     public function dashboard()
     {
-        $stores = Store::where('status', 0)->with('userd')->paginate(15);
+        $stores = Store::where('status', 0)->with('userd')->OrderBy('id','desc')->paginate(15);
         return view('dashboard', compact('stores'));
     }
 
@@ -111,5 +111,13 @@ class StoreController extends Controller
     public function destroy(Store $store)
     {
         //
+    }
+
+    public function delete($id){
+        $store = Store::whereId($id)->first();
+        if($store->delete()){
+            return redirect()->back();
+        }
+        return redirect()->back();
     }
 }
