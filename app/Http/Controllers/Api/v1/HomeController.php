@@ -52,7 +52,10 @@ class HomeController extends Controller
     public function home(){
         $stories = [];
         if(auth()->user()){
-            $stores = Store::whereIn('id',auth()->user()->followings()->pluck('store_id')->toArray())->get();
+            $stores = Store::whereIn('id',auth()->user()->followings()->pluck('store_id')->toArray())
+		->withCount('followers') // Count the number of followings for each store
+            ->orderBy('followers_count', 'desc')
+		 ->get();
             foreach($stores as $store){
                 if($store->is_stories){
                     $stories[] = $store;
@@ -70,23 +73,10 @@ class HomeController extends Controller
 
     public function stores(Request $request, $id){
         $category = Category::whereId($id)->first();
+        $stores = Store::whereHas('available_stories',function($r) use ($id){
+            $r->where('category_id',$id);
+        })->where('status',1)->get();
         
-        // $stores = Store::whereHas('available_stories',function($r) use ($id){
-        //     $r->where('category_id',$id);
-        // })->where(function($r) use ($request){
-        //     $r->whereHas('branches',function($q) use ($request){
-        //         $q->where('region_id',$request->region_id);
-        //     })->orwhereHas('user',function($s) use ($request){
-        //         $s->where('region',$request->region_id);
-        //     });
-        // })->where('status',1)->get();
-
-
-        // $stores = Store::whereHas('available_stories',function($r) use ($id){
-        //     $r->where('category_id',$id);
-        // })->where('status',1)->get();
-
-        $stores = Store::whereHas('available_stories')->where('status',1)->get();
         $result = [];
 
         foreach($stores as $store){
@@ -96,7 +86,7 @@ class HomeController extends Controller
                     $available_stories[] = $story;
                 }
             }
-            if(count($available_stories)>0){
+            if(!empty($available_stories)){
                 $result[] = [
                     'id' => $store->id,
                     'user_id' => $store->user_id,
@@ -110,9 +100,12 @@ class HomeController extends Controller
                     'visits' => $store->visits,
                     'is_stories' => $store->is_stories,
                     'is_followed' => $store->is_followed,
+                    'num_of_followers' => count($store->followers),
                     'available_stories'=>$available_stories
                 ];
             }
+            
+            
         }
         return response()->json([
             "data" => [
@@ -181,7 +174,10 @@ class HomeController extends Controller
     public function search(Request $request){
         $stores = Store::where(function($r)use($request){
             $r->where('store_name','like','%'.$request->search_test.'%')->orWhere('store_ar_name','like','%'.$request->search_test.'%');
-        })->where('status',1)->get();
+        })->where('status',1)
+	->withCount('followers') // Count the number of followings for each store
+            ->orderBy('followers_count', 'desc')
+	->get();
         return response()->json([
             "data" => [
                 'results'=>$stores

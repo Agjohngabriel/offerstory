@@ -26,6 +26,7 @@ Route::post('/follow/{id}', [App\Http\Controllers\Api\v1\UserActionController::c
 Route::get('/store/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
 Route::group([ 'middleware' =>  ['auth:api']], function() {
     Route::post('/update/user', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->name('user.update');
+    Route::post('/logout', [App\Http\Controllers\Api\v1\AuthController::class,'logout'])->name('user.logout');
 });
 Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.reset');
 
@@ -59,9 +60,10 @@ Route::get('/countries/{id}', [App\Http\Controllers\Api\v1\HomeController::class
 Route::get('/regions', [App\Http\Controllers\Api\v1\HomeController::class,'regions'])->name('regions');
 Route::get('/categories', [App\Http\Controllers\Api\v1\HomeController::class,'categories'])->name('categories');
 Route::get('/home', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->name('home');
-Route::get('/stores/category/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'stores'])->name('stores');
-Route::get('/stores/category/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'stores'])->middleware('auth:api')->name('stores');
+Route::post('/stores/category/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'stores'])->name('stores');
+Route::post('/stores/category/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'stores'])->middleware('auth:api')->name('stores');
 Route::get('/search', [App\Http\Controllers\Api\v1\HomeController::class,'search'])->name('search');
 Route::get('/store/view/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
+Route::get('/store/view/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->middleware('auth:api')->name('viewauth');
 Route::get('/home/auth', [App\Http\Controllers\Api\v1\HomeController::class,'home'])->middleware('auth:api')->name('customer.home');
 Route::get('/store/{id}/stories/auth', [App\Http\Controllers\Api\v1\HomeController::class,'get_story'])->middleware('auth:api');
