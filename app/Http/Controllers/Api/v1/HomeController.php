@@ -49,7 +49,7 @@ class HomeController extends Controller
         ], 200);
     }
 
-    public function home(){
+    public function home(Request $request){
         $stories = [];
         if(auth()->user()){
             $stores = Store::whereIn('id',auth()->user()->followings()->pluck('store_id')->toArray())
@@ -58,7 +58,12 @@ class HomeController extends Controller
 		 ->get();
             foreach($stores as $store){
                 if($store->is_stories){
-                    $stories[] = $store;
+                    $available_stories = $store->available_stories()->whereHas('regions', function ($query) use ($request) {
+                        $query->where('regions.id', $request->region_id);
+                    })->get();
+                    if($available_stories->isNotEmpty()){
+                        $stories[] = $store;
+                    }
                 }
             }
         }
@@ -76,7 +81,7 @@ class HomeController extends Controller
         $stores = Store::whereHas('available_stories',function($r) use ($id){
             $r->where('category_id',$id);
         })->where('status',1)->get();
-        
+
         $result = [];
 
         foreach($stores as $store){
@@ -104,8 +109,8 @@ class HomeController extends Controller
                     'available_stories'=>$available_stories
                 ];
             }
-            
-            
+
+
         }
         return response()->json([
             "data" => [
