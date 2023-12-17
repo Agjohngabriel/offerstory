@@ -81,7 +81,7 @@ class HomeController extends Controller
         $stores = Store::whereHas('available_stories',function($r) use ($id){
             $r->where('category_id',$id);
         })->where('status',1)->get();
-        
+
         $result = [];
 
         foreach($stores as $store){
@@ -109,8 +109,8 @@ class HomeController extends Controller
                     'available_stories'=>$available_stories
                 ];
             }
-            
-            
+
+
         }
         return response()->json([
             "data" => [
