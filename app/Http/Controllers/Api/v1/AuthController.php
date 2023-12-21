@@ -21,7 +21,7 @@ class AuthController extends Controller
                 'password'=>Hash::make($request->password),
                 'name'=>$request->username
             ];
-    
+
             if($request->has('phone')){
                 $data['phone']= $request->phone;
             }else{
@@ -99,7 +99,7 @@ class AuthController extends Controller
                 'password'=>Hash::make($request->password),
                 'name'=>$request->username
             ];
-    
+
             if($request->has('phone')){
                 $data['phone']= $request->phone;
             }else{
@@ -148,7 +148,7 @@ class AuthController extends Controller
                 ], 200);
             }else{
                 return response()->json([
-                    "data" => null, 'statusCode' => 200, "message" => 'Something went wrong with OTP!'
+                    "data" => null, 'statusCode' => 400, "message" => 'Something went wrong, please try again!'
                 ], 200);
             }
         }catch(Exception $ex){
@@ -211,7 +211,7 @@ class AuthController extends Controller
                 "data" => null, 'statusCode' => 400, "message" => 'Something went wrong!'
             ], 200);
         }
-        
+
     }
 
     public function forget(Request $request){

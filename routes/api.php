@@ -19,12 +19,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/send-reset-password', [\App\Http\Controllers\ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('/verify-reset-password', [\App\Http\Controllers\ForgotPasswordController::class, 'reset']);
 Route::post('/login', [App\Http\Controllers\Api\v1\AuthController::class,'login'])->name('login');
 Route::post('/forget', [App\Http\Controllers\Api\v1\AuthController::class,'forget'])->name('forget');
 Route::get('/store/{id}/stories', [App\Http\Controllers\Api\v1\HomeController::class,'get_story']);
 Route::post('/follow/{id}', [App\Http\Controllers\Api\v1\UserActionController::class,'follow'])->middleware('auth:api');
 Route::get('/store/auth/{id}', [App\Http\Controllers\Api\v1\HomeController::class,'get_store'])->name('search');
 Route::group([ 'middleware' =>  ['auth:api']], function() {
+    Route::post('/update-password', [\App\Http\Controllers\ForgotPasswordController::class, 'changePassword']);
     Route::post('/update/user', [App\Http\Controllers\Api\v1\AuthController::class,'update'])->name('user.update');
     Route::post('/logout', [App\Http\Controllers\Api\v1\AuthController::class,'logout'])->name('user.logout');
 });
@@ -52,7 +55,7 @@ Route::prefix('store')->group(function () {
         Route::delete('/story/{id}', [App\Http\Controllers\Api\v1\StoreActionController::class,'delete_story'])->middleware('role:store')->name('delete.story');
 
     });
-    
+
 });
 
 Route::get('/countries', [App\Http\Controllers\Api\v1\HomeController::class,'countries'])->name('countries');
