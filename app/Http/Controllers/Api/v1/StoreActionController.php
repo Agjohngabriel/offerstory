@@ -91,7 +91,7 @@ class StoreActionController extends Controller
 
     public function get_store(Request $request){
         $store = Store::with('branches')
-            ->withCount('followers', 'stories as active_stories')
+            ->withCount('followers', 'stories')
             ->where('user_id', auth()->id())
             ->with(['stories' => function ($query) {
                 $query->where('expiry', '>=', now()); // Filter stories with expiry date greater than or equal to current time
