@@ -191,7 +191,9 @@ class HomeController extends Controller
     }
 
     public function get_store(Request $request, $id){
-        $store = Store::with('branches','stories')->withCount('followers','stories')->where('id',$id)->where('status',1)->first();
+        $store = Store::with('branches')->withCount('followers','stories') ->with(['stories' => function ($query) {
+            $query->where('expiry', '>=', now()); // Filter stories with expiry date greater than or equal to current time
+        }])->where('id',$id)->where('status',1)->first();
         $visits = (int) $store->visits + 1;
         $store->update(['visits'=>$visits]);
         return response()->json([
